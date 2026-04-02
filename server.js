@@ -8,7 +8,7 @@ app.use(express.json());
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Caovermelho1.',
+    password: 'root',
     database: 'gestao_livros'
 });
 
@@ -68,6 +68,15 @@ app.patch('/books/discount/:id', (req, res) => {
         if (result.affectedRows === 0) return res.status(404).json({ erro: 'Livro não encontrado' });
         
         res.status(200).json({ mensagem: 'Desconto aplicado com sucesso!' });
+    });
+});
+
+app.get('/books/before/:published', (req, res) => {
+    db.query('SELECT * FROM Book WHERE published < ?', [req.params.published], (err, results) => {
+        if (err) return res.status(500).json({ erro: 'Erro ao obter livros' });
+        if (results.length === 0) return res.status(404).json({ erro: 'Nenhum livro encontrado antes desta data' });
+        
+        res.status(200).json(results);
     });
 });
 
