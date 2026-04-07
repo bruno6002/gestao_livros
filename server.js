@@ -71,6 +71,7 @@ app.patch('/books/discount/:id', (req, res) => {
     });
 });
 
+//Listar livros antes da data
 app.get('/books/before/:published', (req, res) => {
     db.query('SELECT * FROM Book WHERE published < ?', [req.params.published], (err, results) => {
         if (err) return res.status(500).json({ erro: 'Erro ao obter livros' });
@@ -79,6 +80,10 @@ app.get('/books/before/:published', (req, res) => {
         res.status(200).json(results);
     });
 });
+
+
+
+
 
 // Iniciar o servidor
 app.listen(3000, () => {
