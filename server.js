@@ -113,6 +113,47 @@ app.delete('/books/:id', (req, res) => {
     });
 });
 
+// Filtrar livros por palavras-chave na sinopse (via body)
+app.post('/books/search', (req, res) => {
+    if (!req.body.keyword) return res.status(400).json({ erro: 'Palavra-chave (keyword) é obrigatória no body' });
+
+    db.query('SELECT * FROM Book WHERE synopsis LIKE ?', [`%${req.body.keyword}%`], (err, results) => {
+        if (err) return res.status(500).json({ erro: 'Erro na pesquisa' });
+        res.status(200).json(results);
+    });
+});
+
+// Filtrar livros por palavras-chave na sinopse (via body)
+app.post('/books/search', (req, res) => {
+    if (!req.body.keyword) return res.status(400).json({ erro: 'Palavra-chave (keyword) é obrigatória no body' });
+
+    db.query('SELECT * FROM Book WHERE synopsis LIKE ?', [`%${req.body.keyword}%`], (err, results) => {
+        if (err) return res.status(500).json({ erro: 'Erro na pesquisa' });
+        res.status(200).json(results);
+    });
+});
+
+//Adicionar comentário a um livro
+app.put('/books/comment', (req, res) => {
+    if (!req.query.id) return res.status(400).json({ erro: 'O ID é obrigatório na query (ex: ?id=1)' });
+    if (!req.body.novoComentario) return res.status(400).json({ erro: 'O campo novoComentario é obrigatório' });
+
+    db.query('SELECT comments FROM Book WHERE id = ?', [req.query.id], (err, results) => {
+        if (err || results.length === 0) return res.status(404).json({ erro: 'Livro não encontrado' });
+
+        const comments = JSON.parse(results[0].comments || '[]');
+        comments.push(req.body.novoComentario);
+
+        db.query('UPDATE Book SET comments = ? WHERE id = ?', [JSON.stringify(comments), req.query.id], (err) => {
+            if (err) return res.status(500).json({ erro: 'Erro ao guardar comentário' });
+
+            db.query('SELECT * FROM Book WHERE id = ?', [req.query.id], (err, finalResult) => {
+                res.status(200).json(finalResult[0]);
+            });
+        });
+    });
+});
+
 // Iniciar o servidor
 app.listen(3000, () => {
     console.log('Servidor a correr na porta 3000');
