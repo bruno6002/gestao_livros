@@ -103,6 +103,16 @@ app.get('/book', (req, res) => {
     });
 });
 
+// Apagar um livro existente (via params)
+app.delete('/books/:id', (req, res) => {
+    db.query('DELETE FROM Book WHERE id = ?', [req.params.id], (err, result) => {
+        if (err) return res.status(500).json({ erro: 'Erro ao apagar livro' });
+        if (result.affectedRows === 0) return res.status(404).json({ erro: 'O ID especificado não existe' });
+        
+        res.status(200).json({ mensagem: 'Livro apagado com sucesso!' });
+    });
+});
+
 // Iniciar o servidor
 app.listen(3000, () => {
     console.log('Servidor a correr na porta 3000');
