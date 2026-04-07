@@ -154,6 +154,16 @@ app.put('/books/comment', (req, res) => {
     });
 });
 
+
+//Listar livros por preço
+app.get('/books/sort/price', (req, res) => {
+    db.query('SELECT * FROM Book', (err, results) => {
+        if (err) return res.status(500).json({ erro: 'Erro ao obter livros' });
+
+        const sortedBooks = results.sort((a, b) => a.price - b.price);
+        res.status(200).json(sortedBooks);
+    });
+});
 // Iniciar o servidor
 app.listen(3000, () => {
     console.log('Servidor a correr na porta 3000');
