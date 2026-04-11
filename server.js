@@ -81,16 +81,6 @@ app.get('/books/before/:published', (req, res) => {
     });
 });
 
-//Selecionar livro por id
-app.get('/books/book', (req, res) => {
-    db.query('SELECT * FROM Book WHERE id = ?', [req.query.id], (err, results) => {
-        if (err) return res.status(500).json({ erro: 'Erro ao obter livro' });
-        if (results.length === 0) return res.status(404).json({ erro: 'Livro não encontrado' });
-        
-        res.status(200).json(results);
-    });
-});
-
 // Selecionar livro pelo seu ID (via query)
 app.get('/book', (req, res) => {
     if (!req.query.id) return res.status(400).json({ erro: 'O ID é obrigatório na query (ex: ?id=1)' });
