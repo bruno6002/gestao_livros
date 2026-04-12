@@ -113,16 +113,6 @@ app.post('/books/search', (req, res) => {
     });
 });
 
-// Filtrar livros por palavras-chave na sinopse (via body)
-app.post('/books/search', (req, res) => {
-    if (!req.body.keyword) return res.status(400).json({ erro: 'Palavra-chave (keyword) é obrigatória no body' });
-
-    db.query('SELECT * FROM Book WHERE synopsis LIKE ?', [`%${req.body.keyword}%`], (err, results) => {
-        if (err) return res.status(500).json({ erro: 'Erro na pesquisa' });
-        res.status(200).json(results);
-    });
-});
-
 //Adicionar comentário a um livro
 app.put('/books/comment', (req, res) => {
     if (!req.query.id) return res.status(400).json({ erro: 'O ID é obrigatório na query (ex: ?id=1)' });
