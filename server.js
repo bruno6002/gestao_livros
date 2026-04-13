@@ -1,20 +1,19 @@
-const express = require('express');
-const mysql = require('mysql2');
+require('dotenv').config();
 
+const express = require('express');
+const db = require('./config/db'); 
 const app = express();
+
+
 app.use(express.json());
 
-// Liga à base de dados
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'gestao_livros'
-});
 
-db.connect((err) => {
-    if (err) return console.error('Erro ao ligar à base de dados:', err);
-    console.log('Ligado à base de dados MySQL!');
+db.connect(err => {
+    if (err) {
+        console.error('Erro ao ligar à BD:', err);
+        return;
+    }
+    console.log('Ligado à base de dados!');
 });
 
 app.get('/books', (req, res) => {
